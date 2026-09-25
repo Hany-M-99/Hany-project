@@ -441,3 +441,176 @@
                 <h2 class="section-title">زورنا أو <span class="gold">اتصل</span></h2>
                 <p class="section-subtitle">نحن في خدمتك</p>
             </div>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <h4>العنوان</h4>
+                            <p>شارع 26 يوليو، المهندسين، الجيزة</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>
+                            <h4>الهاتف</h4>
+                            <p>01067573766</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🕒</div>
+                        <div>
+                            <h4>ساعات العمل</h4>
+                            <p>يومياً من 1 ظهراً حتى 2 صباحاً</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="cName" placeholder="اسمك" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="cPhone" placeholder="رقم هاتفك" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="cMessage" rows="5" placeholder="رسالتك..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gold btn-full">إرسال</button>
+                    <p class="form-status" id="cStatus"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== الفوتر ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#home" class="logo">
+                        <span class="logo-icon">🔥</span>
+                        <span class="logo-text">مطعم <span class="gold">اللهيب</span></span>
+                    </a>
+                    <p>أشهى المشويات على الفحم منذ 1995</p>
+                </div>
+                <div class="footer-links">
+                    <h4>روابط</h4>
+                    <ul>
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#menu">المينيو</a></li>
+                        <li><a href="#about">من نحن</a></li>
+                        <li><a href="#contact">تواصل</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>تواصل</h4>
+                    <ul>
+                        <li>📱 01067573766</li>
+                        <li>📍 المهندسين، الجيزة</li>
+                        <li>🕒 1 ظ - 2 ص</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 مطعم اللهيب. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== سلة التسوق ===== -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>🛒 سلة التسوق</h3>
+            <button class="cart-close" id="cartClose">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty">السلة فاضية</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>الإجمالي:</span>
+                <span class="cart-total-price" id="cartTotal">0 ج.م</span>
+            </div>
+            <button class="btn btn-gold btn-full" id="checkoutBtn">إتمام الأوردر</button>
+        </div>
+    </div>
+
+    <!-- ===== نافذة تأكيد الأوردر ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="orderModal">
+            <button class="modal-close" id="modalClose">✕</button>
+            <h2>📋 بيانات الأوردر</h2>
+            <p class="modal-subtitle">اكمل بياناتك وسيتم إرسال الطلب على واتساب</p>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>الاسم بالكامل *</label>
+                    <input type="text" id="oName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف *</label>
+                    <input type="tel" id="oPhone" required placeholder="01xxxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>رقم هاتف بديل</label>
+                    <input type="tel" id="oPhone2" placeholder="01xxxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>المحافظة *</label>
+                    <select id="oCity" required>
+                        <option value="">اختر المحافظة</option>
+                        <option>القاهرة</option>
+                        <option>الجيزة</option>
+                        <option>الإسكندرية</option>
+                        <option>الدقهلية</option>
+                        <option>الشرقية</option>
+                        <option>المنوفية</option>
+                        <option>القليوبية</option>
+                        <option>البحيرة</option>
+                        <option>الغربية</option>
+                        <option>بورسعيد</option>
+                        <option>دمياط</option>
+                        <option>الإسماعيلية</option>
+                        <option>السويس</option>
+                        <option>كفر الشيخ</option>
+                        <option>الفيوم</option>
+                        <option>بني سويف</option>
+                        <option>المنيا</option>
+                        <option>أسيوط</option>
+                        <option>سوهاج</option>
+                        <option>قنا</option>
+                        <option>الأقصر</option>
+                        <option>أسوان</option>
+                        <option>البحر الأحمر</option>
+                        <option>الوادي الجديد</option>
+                        <option>مطروح</option>
+                        <option>شمال سيناء</option>
+                        <option>جنوب سيناء</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العنوان بالتفصيل *</label>
+                    <textarea id="oAddress" rows="3" required placeholder="الشارع، رقم العمارة، الدور، الشقة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>ملاحظات إضافية</label>
+                    <textarea id="oNotes" rows="2" placeholder="أي طلبات خاصة..."></textarea>
+                </div>
+                <div class="order-summary">
+                    <h4>ملخص الأوردر</h4>
+                    <div id="orderSummaryItems"></div>
+                    <div class="order-total">
+                        <span>الإجمالي:</span>
+                        <span id="orderTotalPrice">0 ج.م</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-gold btn-full">✅ تأكيد وإرسال على واتساب</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== زر العودة للأعلى ===== -->
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
