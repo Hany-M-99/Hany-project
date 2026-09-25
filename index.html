@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="مطعم اللهيب - أفضل المشويات الفاخرة">
     <title>مطعم اللهيب | مشويات فاخرة</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- ===== شاشة التحميل ===== -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-flame">🔥</div>
+            <h2 class="loader-title">مطعم اللهيب</h2>
+            <div class="loader-bar"><span></span></div>
+            <p class="loader-text">جاري تحضير المشويات...</p>
+        </div>
+    </div>
+
+    <!-- ===== شريط تقدم القراءة ===== -->
+    <div class="reading-progress" id="readingProgress"></div>
 
     <!-- ===== شريط التنقل ===== -->
     <nav class="navbar" id="navbar">
@@ -18,14 +35,21 @@
                 <span class="logo-text">مطعم <span class="gold">اللهيب</span></span>
             </a>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#home" class="nav-link active">الرئيسية</a></li>
-                <li><a href="#about" class="nav-link">من نحن</a></li>
-                <li><a href="#menu" class="nav-link">المينيو</a></li>
-                <li><a href="#gallery" class="nav-link">صورنا</a></li>
-                <li><a href="#reviews" class="nav-link">آراء العملاء</a></li>
-                <li><a href="#contact" class="nav-link">تواصل</a></li>
+                <li><a href="#home" class="nav-link active" data-key="nav_home">الرئيسية</a></li>
+                <li><a href="#about" class="nav-link" data-key="nav_about">من نحن</a></li>
+                <li><a href="#menu" class="nav-link" data-key="nav_menu">المينيو</a></li>
+                <li><a href="#gallery" class="nav-link" data-key="nav_gallery">صورنا</a></li>
+                <li><a href="#reviews" class="nav-link" data-key="nav_reviews">آراء العملاء</a></li>
+                <li><a href="#contact" class="nav-link" data-key="nav_contact">تواصل</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle" aria-label="تغيير اللغة">
+                    <span class="lang-icon">🌐</span>
+                    <span class="lang-label">EN</span>
+                </button>
+                <button class="theme-toggle" id="themeToggle" aria-label="تغيير الوضع">
+                    <span class="theme-icon" id="themeIcon">🌙</span>
+                </button>
                 <button class="cart-btn" id="cartBtn" aria-label="عربة التسوق">
                     <span class="cart-icon">🛒</span>
                     <span class="cart-count" id="cartCount">0</span>
@@ -39,33 +63,34 @@
 
     <!-- ===== قسم البطل ===== -->
     <section class="hero" id="home">
+        <div class="hero-bg" id="heroBg"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <p class="hero-tag">✨ الأشهى في مصر</p>
+            <p class="hero-tag" data-key="hero_tag">✨ الأشهى في مصر</p>
             <h1 class="hero-title">
-                مشويات <span class="gold">فاخرة</span><br>
-                على أصولها
+                <span data-key="hero_title_1">مشويات</span> <span class="gold" data-key="hero_title_2">فاخرة</span><br>
+                <span data-key="hero_title_3">على أصولها</span>
             </h1>
-            <p class="hero-subtitle">
+            <p class="hero-subtitle" data-key="hero_subtitle">
                 أجود أنواع اللحوم الطازجة، مشوية على الفحم،
                 بلمسة أسرار خاصة صنعت شهرتنا منذ 1995
             </p>
             <div class="hero-buttons">
-                <a href="#menu" class="btn btn-gold">اطلب الآن 🔥</a>
-                <a href="#about" class="btn btn-outline">تعرف علينا</a>
+                <a href="#menu" class="btn btn-gold" data-key="hero_btn_1">اطلب الآن 🔥</a>
+                <a href="#about" class="btn btn-outline" data-key="hero_btn_2">تعرف علينا</a>
             </div>
             <div class="hero-features">
                 <div class="hero-feature">
                     <span class="hf-icon">🔥</span>
-                    <span>شوي على الفحم</span>
+                    <span data-key="feat_1">شوي على الفحم</span>
                 </div>
                 <div class="hero-feature">
                     <span class="hf-icon">🥩</span>
-                    <span>لحوم طازجة 100%</span>
+                    <span data-key="feat_2">لحوم طازجة 100%</span>
                 </div>
                 <div class="hero-feature">
                     <span class="hf-icon">🚚</span>
-                    <span>توصيل سريع</span>
+                    <span data-key="feat_3">توصيل سريع</span>
                 </div>
             </div>
         </div>
@@ -76,14 +101,14 @@
     <section class="about section" id="about">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">قصتنا</span>
-                <h2 class="section-title">من <span class="gold">نحن</span></h2>
-                <p class="section-subtitle">رحلة 30 عاماً من النكهة الأصيلة</p>
+                <span class="section-tag" data-key="about_tag">قصتنا</span>
+                <h2 class="section-title"><span data-key="about_title_1">من</span> <span class="gold" data-key="about_title_2">نحن</span></h2>
+                <p class="section-subtitle" data-key="about_subtitle">رحلة 30 عاماً من النكهة الأصيلة</p>
             </div>
             <div class="about-grid">
                 <div class="about-image">
                     <div class="about-img-wrapper">
-                        <div class="about-img-placeholder">🍖</div>
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80" alt="مشويات" loading="lazy">
                         <div class="about-badge">
                             <span class="badge-number">30</span>
                             <span class="badge-text">سنة<br>خبرة</span>
@@ -91,13 +116,13 @@
                     </div>
                 </div>
                 <div class="about-content">
-                    <h3>حكاية اللهيب</h3>
-                    <p>
+                    <h3 data-key="about_h3">حكاية اللهيب</h3>
+                    <p data-key="about_p1">
                         بدأت رحلتنا عام 1995 من مطبخ صغير في قلب القاهرة،
                         بحلم واحد: نقدم أطيب المشويات اللي الناس تدوقها.
                         النهارده بقينا وجهة لعشاق اللحم المشوي في مصر.
                     </p>
-                    <p>
+                    <p data-key="about_p2">
                         نختار لحومنا يومياً بعناية، ونستخدم بهارات
                         وتوابل مشهورة بالاسم، ونشوي على الفحم الطبيعي
                         للحصول على الطعم الأصيل.
@@ -105,19 +130,19 @@
                     <div class="about-stats">
                         <div class="stat-box">
                             <h4>1995</h4>
-                            <p>سنة التأسيس</p>
+                            <p data-key="stat_1">سنة التأسيس</p>
                         </div>
                         <div class="stat-box">
                             <h4>+50</h4>
-                            <p>طبق في المينيو</p>
+                            <p data-key="stat_2">طبق في المينيو</p>
                         </div>
                         <div class="stat-box">
                             <h4>+100k</h4>
-                            <p>عميل سعيد</p>
+                            <p data-key="stat_3">عميل سعيد</p>
                         </div>
                         <div class="stat-box">
                             <h4>5</h4>
-                            <p>فروع في مصر</p>
+                            <p data-key="stat_4">فروع في مصر</p>
                         </div>
                     </div>
                 </div>
@@ -129,237 +154,273 @@
     <section class="menu section" id="menu">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">ماذا نقدم</span>
-                <h2 class="section-title">قائمة <span class="gold">الطعام</span></h2>
-                <p class="section-subtitle">أشهى الأطباق بانتظارك</p>
+                <span class="section-tag" data-key="menu_tag">ماذا نقدم</span>
+                <h2 class="section-title"><span data-key="menu_title_1">قائمة</span> <span class="gold" data-key="menu_title_2">الطعام</span></h2>
+                <p class="section-subtitle" data-key="menu_subtitle">أشهى الأطباق بانتظارك</p>
             </div>
             <div class="menu-tabs">
-                <button class="menu-tab active" data-category="all">الكل</button>
-                <button class="menu-tab" data-category="grill">المشويات</button>
-                <button class="menu-tab" data-category="appetizer">المقبلات</button>
-                <button class="menu-tab" data-category="side">الأطباق الجانبية</button>
-                <button class="menu-tab" data-category="drink">المشروبات</button>
-                <button class="menu-tab" data-category="dessert">الحلويات</button>
+                <button class="menu-tab active" data-category="all" data-key="cat_all">الكل</button>
+                <button class="menu-tab" data-category="grill" data-key="cat_grill">المشويات</button>
+                <button class="menu-tab" data-category="appetizer" data-key="cat_app">المقبلات</button>
+                <button class="menu-tab" data-category="side" data-key="cat_side">الأطباق الجانبية</button>
+                <button class="menu-tab" data-category="drink" data-key="cat_drink">المشروبات</button>
+                <button class="menu-tab" data-category="dessert" data-key="cat_dessert">الحلويات</button>
             </div>
             <div class="menu-grid" id="menuGrid">
 
                 <!-- ===== المشويات ===== -->
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🥩</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=600&q=80" alt="كباب لحم" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>كباب لحم</h3>
-                        <p>كباب لحم بلدي مشوي على الفحم مع أرز وسلطة</p>
+                        <h3 data-key="item1_name">كباب لحم</h3>
+                        <p data-key="item1_desc">كباب لحم بلدي مشوي على الفحم مع أرز وسلطة</p>
                         <div class="menu-footer">
                             <span class="menu-price">180 ج.م</span>
-                            <button class="add-btn" data-name="كباب لحم" data-price="180">أضف +</button>
+                            <button class="add-btn" data-name="كباب لحم" data-price="180" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🍗</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=600&q=80" alt="دجاج مشوي" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>دجاج مشوي</h3>
-                        <p>نصف دجاجة مشوية بالتوابل الخاصة</p>
+                        <h3 data-key="item2_name">دجاج مشوي</h3>
+                        <p data-key="item2_desc">نصف دجاجة مشوية بالتوابل الخاصة</p>
                         <div class="menu-footer">
                             <span class="menu-price">140 ج.م</span>
-                            <button class="add-btn" data-name="دجاج مشوي" data-price="140">أضف +</button>
+                            <button class="add-btn" data-name="دجاج مشوي" data-price="140" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🥘</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" alt="طرب" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>طرب</h3>
-                        <p>طرب مشوي بلمسة الشيف الخاصة</p>
+                        <h3 data-key="item3_name">طرب</h3>
+                        <p data-key="item3_desc">طرب مشوي بلمسة الشيف الخاصة</p>
                         <div class="menu-footer">
                             <span class="menu-price">220 ج.م</span>
-                            <button class="add-btn" data-name="طرب" data-price="220">أضف +</button>
+                            <button class="add-btn" data-name="طرب" data-price="220" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🍢</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&q=80" alt="كفتة مشوية" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>كفتة مشوية</h3>
-                        <p>كفتة لحم مفروم بالبهارات مع أرز</p>
+                        <h3 data-key="item4_name">كفتة مشوية</h3>
+                        <p data-key="item4_desc">كفتة لحم مفروم بالبهارات مع أرز</p>
                         <div class="menu-footer">
                             <span class="menu-price">160 ج.م</span>
-                            <button class="add-btn" data-name="كفتة مشوية" data-price="160">أضف +</button>
+                            <button class="add-btn" data-name="كفتة مشوية" data-price="160" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🔥</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80" alt="ريش ضاني" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>ريش ضاني</h3>
-                        <p>ريش ضاني طرية مشوية على الفحم</p>
+                        <h3 data-key="item5_name">ريش ضاني</h3>
+                        <p data-key="item5_desc">ريش ضاني طرية مشوية على الفحم</p>
                         <div class="menu-footer">
                             <span class="menu-price">280 ج.م</span>
-                            <button class="add-btn" data-name="ريش ضاني" data-price="280">أضف +</button>
+                            <button class="add-btn" data-name="ريش ضاني" data-price="280" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="grill">
-                    <div class="menu-img">🍖</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&q=80" alt="مشاوي مشكلة" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>مشاوي مشكلة</h3>
-                        <p>طبق مشاوي مشكل لشخصين (كباب، كفتة، دجاج)</p>
+                        <h3 data-key="item6_name">مشاوي مشكلة</h3>
+                        <p data-key="item6_desc">طبق مشاوي مشكل لشخصين (كباب، كفتة، دجاج)</p>
                         <div class="menu-footer">
                             <span class="menu-price">350 ج.م</span>
-                            <button class="add-btn" data-name="مشاوي مشكلة" data-price="350">أضف +</button>
+                            <button class="add-btn" data-name="مشاوي مشكلة" data-price="350" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ===== المقبلات ===== -->
                 <div class="menu-card" data-category="appetizer">
-                    <div class="menu-img">🥗</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" alt="سلطة بلدي" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>سلطة بلدي</h3>
-                        <p>طماطم، خيار، بصل، بقدونس</p>
+                        <h3 data-key="item7_name">سلطة بلدي</h3>
+                        <p data-key="item7_desc">طماطم، خيار، بصل، بقدونس</p>
                         <div class="menu-footer">
                             <span class="menu-price">35 ج.م</span>
-                            <button class="add-btn" data-name="سلطة بلدي" data-price="35">أضف +</button>
+                            <button class="add-btn" data-name="سلطة بلدي" data-price="35" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="appetizer">
-                    <div class="menu-img">🧆</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1637949385162-e416fb15b2ce?w=600&q=80" alt="حمص بالطحينة" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>حمص بالطحينة</h3>
-                        <p>حمص كريمي بالطحينة وزيت الزيتون</p>
+                        <h3 data-key="item8_name">حمص بالطحينة</h3>
+                        <p data-key="item8_desc">حمص كريمي بالطحينة وزيت الزيتون</p>
                         <div class="menu-footer">
                             <span class="menu-price">40 ج.م</span>
-                            <button class="add-btn" data-name="حمص بالطحينة" data-price="40">أضف +</button>
+                            <button class="add-btn" data-name="حمص بالطحينة" data-price="40" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="appetizer">
-                    <div class="menu-img">🍆</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1604909052743-94e838986d24?w=600&q=80" alt="بابا غنوج" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>بابا غنوج</h3>
-                        <p>باذنجان مشوي بالطحينة</p>
+                        <h3 data-key="item9_name">بابا غنوج</h3>
+                        <p data-key="item9_desc">باذنجان مشوي بالطحينة</p>
                         <div class="menu-footer">
                             <span class="menu-price">40 ج.م</span>
-                            <button class="add-btn" data-name="بابا غنوج" data-price="40">أضف +</button>
+                            <button class="add-btn" data-name="بابا غنوج" data-price="40" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="appetizer">
-                    <div class="menu-img">🥣</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80" alt="شوربة عدس" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>شوربة عدس</h3>
-                        <p>شوربة عدس دافئة بالليمون</p>
+                        <h3 data-key="item10_name">شوربة عدس</h3>
+                        <p data-key="item10_desc">شوربة عدس دافئة بالليمون</p>
                         <div class="menu-footer">
                             <span class="menu-price">45 ج.م</span>
-                            <button class="add-btn" data-name="شوربة عدس" data-price="45">أضف +</button>
+                            <button class="add-btn" data-name="شوربة عدس" data-price="45" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ===== الأطباق الجانبية ===== -->
                 <div class="menu-card" data-category="side">
-                    <div class="menu-img">🍚</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=600&q=80" alt="أرز بخاري" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>أرز بخاري</h3>
-                        <p>أرز بسمتي بالبهارات</p>
+                        <h3 data-key="item11_name">أرز بخاري</h3>
+                        <p data-key="item11_desc">أرز بسمتي بالبهارات</p>
                         <div class="menu-footer">
                             <span class="menu-price">50 ج.م</span>
-                            <button class="add-btn" data-name="أرز بخاري" data-price="50">أضف +</button>
+                            <button class="add-btn" data-name="أرز بخاري" data-price="50" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="side">
-                    <div class="menu-img">🍟</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80" alt="بطاطس مقلية" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>بطاطس مقلية</h3>
-                        <p>بطاطس مقرمشة ذهبية</p>
+                        <h3 data-key="item12_name">بطاطس مقلية</h3>
+                        <p data-key="item12_desc">بطاطس مقرمشة ذهبية</p>
                         <div class="menu-footer">
                             <span class="menu-price">45 ج.م</span>
-                            <button class="add-btn" data-name="بطاطس مقلية" data-price="45">أضف +</button>
+                            <button class="add-btn" data-name="بطاطس مقلية" data-price="45" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="side">
-                    <div class="menu-img">🫓</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80" alt="عيش بلدي" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>عيش بلدي</h3>
-                        <p>خمس أرغفة عيش بلدي طازج</p>
+                        <h3 data-key="item13_name">عيش بلدي</h3>
+                        <p data-key="item13_desc">خمس أرغفة عيش بلدي طازج</p>
                         <div class="menu-footer">
                             <span class="menu-price">15 ج.م</span>
-                            <button class="add-btn" data-name="عيش بلدي" data-price="15">أضف +</button>
+                            <button class="add-btn" data-name="عيش بلدي" data-price="15" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ===== المشروبات ===== -->
                 <div class="menu-card" data-category="drink">
-                    <div class="menu-img">🥤</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=600&q=80" alt="مياه غازية" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>مياه غازية</h3>
-                        <p>كوكاكولا، سبرايت، فانتا</p>
+                        <h3 data-key="item14_name">مياه غازية</h3>
+                        <p data-key="item14_desc">كوكاكولا، سبرايت، فانتا</p>
                         <div class="menu-footer">
                             <span class="menu-price">25 ج.م</span>
-                            <button class="add-btn" data-name="مياه غازية" data-price="25">أضف +</button>
+                            <button class="add-btn" data-name="مياه غازية" data-price="25" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="drink">
-                    <div class="menu-img">🧃</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600&q=80" alt="عصير مانجو" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>عصير مانجو</h3>
-                        <p>عصير مانجو طازج</p>
+                        <h3 data-key="item15_name">عصير مانجو</h3>
+                        <p data-key="item15_desc">عصير مانجو طازج</p>
                         <div class="menu-footer">
                             <span class="menu-price">35 ج.م</span>
-                            <button class="add-btn" data-name="عصير مانجو" data-price="35">أضف +</button>
+                            <button class="add-btn" data-name="عصير مانجو" data-price="35" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="drink">
-                    <div class="menu-img">🍹</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=600&q=80" alt="ليمون بالنعناع" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>ليمون بالنعناع</h3>
-                        <p>ليمون طازج مع نعناع</p>
+                        <h3 data-key="item16_name">ليمون بالنعناع</h3>
+                        <p data-key="item16_desc">ليمون طازج مع نعناع</p>
                         <div class="menu-footer">
                             <span class="menu-price">30 ج.م</span>
-                            <button class="add-btn" data-name="ليمون بالنعناع" data-price="30">أضف +</button>
+                            <button class="add-btn" data-name="ليمون بالنعناع" data-price="30" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- ===== الحلويات ===== -->
                 <div class="menu-card" data-category="dessert">
-                    <div class="menu-img">🍮</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&q=80" alt="أم علي" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>أم علي</h3>
-                        <p>أم علي بالمكسرات والقشطة</p>
+                        <h3 data-key="item17_name">أم علي</h3>
+                        <p data-key="item17_desc">أم علي بالمكسرات والقشطة</p>
                         <div class="menu-footer">
                             <span class="menu-price">55 ج.م</span>
-                            <button class="add-btn" data-name="أم علي" data-price="55">أضف +</button>
+                            <button class="add-btn" data-name="أم علي" data-price="55" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="menu-card" data-category="dessert">
-                    <div class="menu-img">🍰</div>
+                    <div class="menu-img">
+                        <img src="https://images.unsplash.com/photo-1533134242452-776676e2f0e3?w=600&q=80" alt="تشيز كيك" loading="lazy">
+                    </div>
                     <div class="menu-info">
-                        <h3>تشيز كيك</h3>
-                        <p>تشيز كيك بالفراولة</p>
+                        <h3 data-key="item18_name">تشيز كيك</h3>
+                        <p data-key="item18_desc">تشيز كيك بالفراولة</p>
                         <div class="menu-footer">
                             <span class="menu-price">60 ج.م</span>
-                            <button class="add-btn" data-name="تشيز كيك" data-price="60">أضف +</button>
+                            <button class="add-btn" data-name="تشيز كيك" data-price="60" data-key="add_btn">أضف +</button>
                         </div>
                     </div>
                 </div>
@@ -372,17 +433,17 @@
     <section class="gallery section" id="gallery">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">لقطات</span>
-                <h2 class="section-title">معرض <span class="gold">الصور</span></h2>
-                <p class="section-subtitle">لمحة من أجوائنا</p>
+                <span class="section-tag" data-key="gallery_tag">لقطات</span>
+                <h2 class="section-title"><span data-key="gallery_title_1">معرض</span> <span class="gold" data-key="gallery_title_2">الصور</span></h2>
+                <p class="section-subtitle" data-key="gallery_subtitle">لمحة من أجوائنا</p>
             </div>
             <div class="gallery-grid">
-                <div class="gallery-item"><span>🍖</span></div>
-                <div class="gallery-item"><span>🔥</span></div>
-                <div class="gallery-item"><span>🥩</span></div>
-                <div class="gallery-item"><span>🍗</span></div>
-                <div class="gallery-item"><span>🍢</span></div>
-                <div class="gallery-item"><span>🥘</span></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80" alt="مشويات" loading="lazy"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80" alt="شوي" loading="lazy"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80" alt="لحم" loading="lazy"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&q=80" alt="دجاج" loading="lazy"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&q=80" alt="مشاوي" loading="lazy"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80" alt="مطعم" loading="lazy"></div>
             </div>
         </div>
     </section>
@@ -391,41 +452,41 @@
     <section class="reviews section" id="reviews">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">قالوا عنا</span>
-                <h2 class="section-title">آراء <span class="gold">العملاء</span></h2>
-                <p class="section-subtitle">سمعتنا من عملائنا</p>
+                <span class="section-tag" data-key="reviews_tag">قالوا عنا</span>
+                <h2 class="section-title"><span data-key="reviews_title_1">آراء</span> <span class="gold" data-key="reviews_title_2">العملاء</span></h2>
+                <p class="section-subtitle" data-key="reviews_subtitle">سمعتنا من عملائنا</p>
             </div>
             <div class="reviews-grid">
                 <div class="review-card">
                     <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p>"أحسن مشويات جربتها في حياتي، اللحمة طازة والطعم خطير"</p>
+                    <p data-key="review1">"أحسن مشويات جربتها في حياتي، اللحمة طازة والطعم خطير"</p>
                     <div class="review-author">
                         <div class="author-avatar">م</div>
                         <div>
-                            <h4>محمود أحمد</h4>
-                            <span>عميل دائم</span>
+                            <h4 data-key="review1_name">محمود أحمد</h4>
+                            <span data-key="review1_role">عميل دائم</span>
                         </div>
                     </div>
                 </div>
                 <div class="review-card">
                     <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p>"الخدمة سريعة والأكل واصل سخن، تجربة ممتازة بجد"</p>
+                    <p data-key="review2">"الخدمة سريعة والأكل واصل سخن، تجربة ممتازة بجد"</p>
                     <div class="review-author">
                         <div class="author-avatar">س</div>
                         <div>
-                            <h4>سارة محمد</h4>
-                            <span>عميلة</span>
+                            <h4 data-key="review2_name">سارة محمد</h4>
+                            <span data-key="review2_role">عميلة</span>
                         </div>
                     </div>
                 </div>
                 <div class="review-card">
                     <div class="review-stars">⭐⭐⭐⭐⭐</div>
-                    <p>"طرب وريش الضاني تحفة، مش هتلاقي زيها في مكان تاني"</p>
+                    <p data-key="review3">"طرب وريش الضاني تحفة، مش هتلاقي زيها في مكان تاني"</p>
                     <div class="review-author">
                         <div class="author-avatar">ع</div>
                         <div>
-                            <h4>عمر خالد</h4>
-                            <span>عميل</span>
+                            <h4 data-key="review3_name">عمر خالد</h4>
+                            <span data-key="review3_role">عميل</span>
                         </div>
                     </div>
                 </div>
@@ -437,45 +498,45 @@
     <section class="contact section" id="contact">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">تواصل</span>
-                <h2 class="section-title">زورنا أو <span class="gold">اتصل</span></h2>
-                <p class="section-subtitle">نحن في خدمتك</p>
+                <span class="section-tag" data-key="contact_tag">تواصل</span>
+                <h2 class="section-title"><span data-key="contact_title_1">زورنا أو</span> <span class="gold" data-key="contact_title_2">اتصل</span></h2>
+                <p class="section-subtitle" data-key="contact_subtitle">نحن في خدمتك</p>
             </div>
             <div class="contact-grid">
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="contact-icon">📍</div>
                         <div>
-                            <h4>العنوان</h4>
-                            <p>شارع 26 يوليو، المهندسين، الجيزة</p>
+                            <h4 data-key="contact_addr">العنوان</h4>
+                            <p>المنصورة، الدقهلية</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📱</div>
                         <div>
-                            <h4>الهاتف</h4>
+                            <h4 data-key="contact_phone">الهاتف</h4>
                             <p>01067573766</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">🕒</div>
                         <div>
-                            <h4>ساعات العمل</h4>
-                            <p>يومياً من 1 ظهراً حتى 2 صباحاً</p>
+                            <h4 data-key="contact_hours">ساعات العمل</h4>
+                            <p data-key="contact_hours_val">يومياً من 1 ظهراً حتى 2 صباحاً</p>
                         </div>
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
                     <div class="form-group">
-                        <input type="text" id="cName" placeholder="اسمك" required>
+                        <input type="text" id="cName" placeholder="اسمك" required data-key-placeholder="form_name">
                     </div>
                     <div class="form-group">
-                        <input type="tel" id="cPhone" placeholder="رقم هاتفك" required>
+                        <input type="tel" id="cPhone" placeholder="رقم هاتفك" required data-key-placeholder="form_phone">
                     </div>
                     <div class="form-group">
-                        <textarea id="cMessage" rows="5" placeholder="رسالتك..." required></textarea>
+                        <textarea id="cMessage" rows="5" placeholder="رسالتك..." required data-key-placeholder="form_msg"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-gold btn-full">إرسال</button>
+                    <button type="submit" class="btn btn-gold btn-full" data-key="form_send">إرسال</button>
                     <p class="form-status" id="cStatus"></p>
                 </form>
             </div>
@@ -491,28 +552,28 @@
                         <span class="logo-icon">🔥</span>
                         <span class="logo-text">مطعم <span class="gold">اللهيب</span></span>
                     </a>
-                    <p>أشهى المشويات على الفحم منذ 1995</p>
+                    <p data-key="footer_desc">أشهى المشويات على الفحم منذ 1995</p>
                 </div>
                 <div class="footer-links">
-                    <h4>روابط</h4>
+                    <h4 data-key="footer_links">روابط</h4>
                     <ul>
-                        <li><a href="#home">الرئيسية</a></li>
-                        <li><a href="#menu">المينيو</a></li>
-                        <li><a href="#about">من نحن</a></li>
-                        <li><a href="#contact">تواصل</a></li>
+                        <li><a href="#home" data-key="nav_home">الرئيسية</a></li>
+                        <li><a href="#menu" data-key="nav_menu">المينيو</a></li>
+                        <li><a href="#about" data-key="nav_about">من نحن</a></li>
+                        <li><a href="#contact" data-key="nav_contact">تواصل</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
-                    <h4>تواصل</h4>
+                    <h4 data-key="footer_contact">تواصل</h4>
                     <ul>
                         <li>📱 01067573766</li>
-                        <li>📍 المهندسين، الجيزة</li>
+                        <li>📍 المنصورة، الدقهلية</li>
                         <li>🕒 1 ظ - 2 ص</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2025 مطعم اللهيب. جميع الحقوق محفوظة.</p>
+                <p data-key="footer_rights">© 2025 مطعم اللهيب. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
@@ -520,97 +581,6 @@
     <!-- ===== سلة التسوق ===== -->
     <div class="cart-sidebar" id="cartSidebar">
         <div class="cart-header">
-            <h3>🛒 سلة التسوق</h3>
+            <h3 data-key="cart_title">🛒 سلة التسوق</h3>
             <button class="cart-close" id="cartClose">✕</button>
         </div>
-        <div class="cart-items" id="cartItems">
-            <p class="cart-empty">السلة فاضية</p>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>الإجمالي:</span>
-                <span class="cart-total-price" id="cartTotal">0 ج.م</span>
-            </div>
-            <button class="btn btn-gold btn-full" id="checkoutBtn">إتمام الأوردر</button>
-        </div>
-    </div>
-
-    <!-- ===== نافذة تأكيد الأوردر ===== -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal" id="orderModal">
-            <button class="modal-close" id="modalClose">✕</button>
-            <h2>📋 بيانات الأوردر</h2>
-            <p class="modal-subtitle">اكمل بياناتك وسيتم إرسال الطلب على واتساب</p>
-            <form id="orderForm">
-                <div class="form-group">
-                    <label>الاسم بالكامل *</label>
-                    <input type="text" id="oName" required>
-                </div>
-                <div class="form-group">
-                    <label>رقم الهاتف *</label>
-                    <input type="tel" id="oPhone" required placeholder="01xxxxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>رقم هاتف بديل</label>
-                    <input type="tel" id="oPhone2" placeholder="01xxxxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>المحافظة *</label>
-                    <select id="oCity" required>
-                        <option value="">اختر المحافظة</option>
-                        <option>القاهرة</option>
-                        <option>الجيزة</option>
-                        <option>الإسكندرية</option>
-                        <option>الدقهلية</option>
-                        <option>الشرقية</option>
-                        <option>المنوفية</option>
-                        <option>القليوبية</option>
-                        <option>البحيرة</option>
-                        <option>الغربية</option>
-                        <option>بورسعيد</option>
-                        <option>دمياط</option>
-                        <option>الإسماعيلية</option>
-                        <option>السويس</option>
-                        <option>كفر الشيخ</option>
-                        <option>الفيوم</option>
-                        <option>بني سويف</option>
-                        <option>المنيا</option>
-                        <option>أسيوط</option>
-                        <option>سوهاج</option>
-                        <option>قنا</option>
-                        <option>الأقصر</option>
-                        <option>أسوان</option>
-                        <option>البحر الأحمر</option>
-                        <option>الوادي الجديد</option>
-                        <option>مطروح</option>
-                        <option>شمال سيناء</option>
-                        <option>جنوب سيناء</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>العنوان بالتفصيل *</label>
-                    <textarea id="oAddress" rows="3" required placeholder="الشارع، رقم العمارة، الدور، الشقة..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>ملاحظات إضافية</label>
-                    <textarea id="oNotes" rows="2" placeholder="أي طلبات خاصة..."></textarea>
-                </div>
-                <div class="order-summary">
-                    <h4>ملخص الأوردر</h4>
-                    <div id="orderSummaryItems"></div>
-                    <div class="order-total">
-                        <span>الإجمالي:</span>
-                        <span id="orderTotalPrice">0 ج.م</span>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-gold btn-full">✅ تأكيد وإرسال على واتساب</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ===== زر العودة للأعلى ===== -->
-    <button class="back-to-top" id="backToTop">↑</button>
-
-    <script src="script.js"></script>
-</body>
-</html>
