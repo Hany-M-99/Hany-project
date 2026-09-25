@@ -21,6 +21,8 @@
     --transition: all 0.3s ease;
 }
 
+/* ===== إخفاء اللودر مؤقتاً ===== */
+.loader { display: none !important; }
 /* ===== الوضع النهاري ===== */
 body.light-mode {
     --bg-main: #f5f1e8;
