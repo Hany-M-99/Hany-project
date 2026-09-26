@@ -715,7 +715,137 @@
 
     <!-- ===== زر العودة للأعلى ===== -->
     <button class="back-to-top" id="backToTop">↑</button>
+   <style>
+.cart-coupon {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+    padding: 0 20px;
+}
+.cart-coupon input {
+    flex: 1;
+    background: #0a0a0a;
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #e8e8e8;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+}
+.cart-coupon input:focus {
+    outline: none;
+    border-color: #d4af37;
+}
+.cart-coupon button {
+    background: #d4af37;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+}
+.coupon-message {
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 10px;
+    min-height: 18px;
+    color: #25D366;
+    font-weight: 600;
+    padding: 0 20px;
+}
+</style>
 
+<script>
+// ===== الكوبونات =====
+window.addEventListener('DOMContentLoaded', function() {
+    const COUPONS = {
+        'WELCOME10': { type: 'percent', value: 10, label: 'خصم 10%' },
+        'SAVE20': { type: 'percent', value: 20, label: 'خصم 20%' },
+        'FREE50': { type: 'fixed', value: 50, label: 'خصم 50 جنيه' }
+    };
+    window.appliedCoupon = null;
+
+    // إضافة خانة الكود جوه السلة
+    const cartFooter = document.querySelector('.cart-footer');
+    if (cartFooter) {
+        const couponHTML = `
+            <div class="cart-coupon">
+                <input type="text" id="couponInput" placeholder="🎟️ كود الخصم">
+                <button id="applyCouponBtn">تطبيق</button>
+            </div>
+            <p class="coupon-message" id="couponMessage"></p>
+        `;
+        cartFooter.insertAdjacentHTML('afterbegin', couponHTML);
+    }
+
+    // عند الضغط على "تطبيق"
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'applyCouponBtn') {
+            const code = document.getElementById('couponInput').value.trim().toUpperCase();
+            const msg = document.getElementById('couponMessage');
+            
+            if (!code) {
+                msg.textContent = '⚠️ اكتب كود الخصم';
+                msg.style.color = '#e74c3c';
+                return;
+            }
+            
+            if (COUPONS[code]) {
+                window.appliedCoupon = code;
+                msg.textContent = '✅ ' + COUPONS[code].label;
+                msg.style.color = '#25D366';
+                applyDiscount();
+            } else {
+                window.appliedCoupon = null;
+                msg.textContent = '❌ كود غير صحيح';
+                msg.style.color = '#e74c3c';
+                applyDiscount();
+            }
+        }
+    });
+
+    // تطبيق الخصم
+    function applyDiscount() {
+        if (typeof cart === 'undefined' || !cart.length) return;
+        
+        let subtotal = 0;
+        cart.forEach(item => {
+            subtotal += item.price * item.qty;
+        });
+        
+        let discount = 0;
+        if (window.appliedCoupon) {
+            const c = COUPONS[window.appliedCoupon];
+            discount = c.type === 'percent' 
+                ? Math.round(subtotal * c.value / 100) 
+                : c.value;
+        }
+        
+        const finalTotal = Math.max(0, subtotal - discount);
+        
+        // تحديث الإجمالي في السلة
+        const cartTotalEl = document.getElementById('cartTotal');
+        if (cartTotalEl) {
+            cartTotalEl.textContent = finalTotal + ' ج.م';
+        }
+        
+        // إزالة سطر الخصم القديم لو موجود
+        const oldLine = document.querySelector('.discount-display');
+        if (oldLine) oldLine.remove();
+        
+        // إضافة سطر الخصم لو موجود
+        if (discount > 0 && cartTotalEl) {
+            const discountLine = document.createElement('div');
+            discountLine.className = 'discount-display';
+            discountLine.style.cssText = 'color:#25D366;font-weight:700;font-size:14px;text-align:center;margin-bottom:8px;';
+            discountLine.textContent = '🎟️ خصم: -' + discount + ' ج.م';
+            cartTotalEl.closest('.cart-total').insertAdjacentElement('beforebegin', discountLine);
+        }
+    }
+});
+                    </script> 
     <script src="script.js"></script>
 </body>
 </html>
