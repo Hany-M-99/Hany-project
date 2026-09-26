@@ -2095,5 +2095,150 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 })();
 </script>
+<!-- ===== إصلاح نهائي لأزرار الإضافة ===== -->
+<script>
+(function() {
+    function addToCartFallback(name, price) {
+        let cart = [];
+        try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch(e) {}
+        const ex = cart.find(i => i.name === name);
+        if (ex) ex.qty += 1;
+        else cart.push({ name: name, price: price, qty: 1 });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        const count = document.getElementById('cartCount');
+        if (count) count.textContent = cart.reduce((s,i) => s+i.qty, 0);
+        if (typeof window.updateCart === 'function') {
+            try { window.updateCart(); } catch(e) {}
+        }
+    }
+    
+    function showMsg(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#d4af37,#a8841f);color:#0a0a0a;padding:14px 28px;border-radius:50px;font-weight:700;font-family:Cairo,sans-serif;z-index:9999999;box-shadow:0 10px 30px rgba(212,175,55,0.4);max-width:90vw;text-align:center;font-size:14px;';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2500);
+    }
+    
+    let currentItem = null;
+    
+    function updateTotal() {
+        if (!currentItem) return;
+        const s = document.querySelector('.opt-choice[data-val].active');
+        const sE = s && s.dataset.val === 'large' ? 50 : 0;
+        let aT = 0;
+        document.querySelectorAll('[data-addon].active').forEach(el => aT += parseInt(el.dataset.price || 0));
+        const el = document.getElementById('optTotal');
+        if (el) el.textContent = (currentItem.basePrice + sE + aT) + ' ج.م';
+    }
+    
+    function init() {
+        // إعادة ربط كل أزرار الإضافة
+        document.querySelectorAll('.add-btn').forEach(oldBtn => {
+            const newBtn = oldBtn.cloneNode(true);
+            oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault(); e.stopPropagation();
+                const name = this.dataset.name;
+                const price = parseFloat(this.dataset.price);
+                if (!name || isNaN(price)) return;
+                currentItem = { name: name, basePrice: price };
+                
+                const modal = document.getElementById('optModal');
+                if (!modal) {
+                    addToCartFallback(name, price);
+                    showMsg('✅ تم إضافة ' + name);
+                    return;
+                }
+                
+                document.getElementById('optItemName').textContent = name;
+                document.querySelectorAll('.opt-choice').forEach(c => c.classList.remove('active'));
+                const small = document.querySelector('.opt-choice[data-val="small"]');
+                if (small) small.classList.add('active');
+                document.getElementById('optNotes').value = '';
+                
+                const addons = [
+                    { id: 'c', label: '🧀 جبنة', price: 20 },
+                    { id: 's', label: '🥫 صوص', price: 15 },
+                    { id: 'b', label: '🫓 عيش', price: 10 },
+                    { id: 'f', label: '🍟 بطاطس', price: 30 }
+                ];
+                document.getElementById('optAddons').innerHTML = addons.map(a => 
+                    '<div class="opt-choice" data-addon="' + a.id + '" data-price="' + a.price + '">' + a.label + ' <span style="color:#d4af37">+' + a.price + 'ج</span></div>'
+                ).join('');
+                
+                document.getElementById('optTotal').textContent = price + ' ج.م';
+                modal.classList.add('open');
+            });
+        });
+        
+        // أحداث الحجم
+        document.querySelectorAll('.opt-choice[data-val]').forEach(c => {
+            c.onclick = function() {
+                document.querySelectorAll('.opt-choice[data-val]').forEach(x => x.classList.remove('active'));
+                this.classList.add('active');
+                updateTotal();
+            };
+        });
+        
+        // أحداث الإضافات
+        const addonDiv = document.getElementById('optAddons');
+        if (addonDiv) {
+            addonDiv.onclick = function(e) {
+                const c = e.target.closest('.opt-choice');
+                if (!c) return;
+                c.classList.toggle('active');
+                updateTotal();
+            };
+        }
+        
+        const notesEl = document.getElementById('optNotes');
+        if (notesEl) notesEl.oninput = updateTotal;
+        
+        const closeBtn = document.getElementById('optClose');
+        if (closeBtn) closeBtn.onclick = () => document.getElementById('optModal').classList.remove('open');
+        
+        const modal = document.getElementById('optModal');
+        if (modal) modal.onclick = function(e) { if (e.target === this) this.classList.remove('open'); };
+        
+        // زر "أضف للسلة" في النافذة
+        const addBtn = document.getElementById('optAdd');
+        if (addBtn) {
+            addBtn.onclick = function() {
+                if (!currentItem) return;
+                const s = document.querySelector('.opt-choice[data-val].active');
+                const size = s && s.dataset.val === 'large' ? 'كبير' : 'وسط';
+                const sE = s && s.dataset.val === 'large' ? 50 : 0;
+                let aT = 0;
+                const aL = [];
+                document.querySelectorAll('[data-addon].active').forEach(el => {
+                    aL.push(el.textContent.trim().split('+')[0].trim());
+                    aT += parseInt(el.dataset.price || 0);
+                });
+                const notes = document.getElementById('optNotes').value.trim();
+                const finalPrice = currentItem.basePrice + sE + aT;
+                let fullName = currentItem.name + ' (' + size + ')';
+                if (aL.length) fullName += ' + ' + aL.join(' + ');
+                if (notes) fullName += ' 📝 ' + notes;
+                
+                let ok = false;
+                if (typeof window.addToCart === 'function') {
+                    try { window.addToCart(fullName, finalPrice); ok = true; } catch(e) {}
+                }
+                if (!ok) addToCartFallback(fullName, finalPrice);
+                
+                showMsg('✅ تم إضافة ' + fullName);
+                document.getElementById('optModal').classList.remove('open');
+            };
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(init, 500));
+    } else {
+        setTimeout(init, 500);
+    }
+})();
+</script>
 </body>
 </html>
