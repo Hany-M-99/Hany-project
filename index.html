@@ -1147,6 +1147,23 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(init, 800);
     }
 })();
-</script>  
+</script> 
+<!-- ===== إصلاح مشكلة المفضلة ===== -->
+<script>
+(function() {
+    // تنظيف inline styles قبل أي تبديل تاب
+    document.addEventListener('click', function(e) {
+        const tab = e.target.closest('.menu-tab');
+        if (!tab) return;
+        
+        // لو التاب مش "المفضلة" → نظّف كل الكروت من inline style
+        if (tab.getAttribute('data-category') !== 'favorites') {
+            document.querySelectorAll('.menu-card').forEach(card => {
+                card.style.display = '';
+            });
+        }
+    }, true); // capture phase - بيشتغل قبل أي handler تاني
+})();
+</script>
 </body>
 </html>
