@@ -847,5 +847,102 @@ window.addEventListener('DOMContentLoaded', function() {
 });
                     </script> 
     <script src="script.js"></script>
+    <!-- ===== ميزة البحث في المينيو ===== -->
+<script>
+(function() {
+    // 1. CSS
+    const css = document.createElement('style');
+    css.textContent = `
+        .menu-search-box {
+            max-width: 500px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+        .menu-search-box input {
+            width: 100%;
+            background: var(--bg-card-2);
+            border: 2px solid var(--border-mid);
+            border-radius: 50px;
+            padding: 14px 50px 14px 20px;
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+        .menu-search-box input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+        }
+        .menu-search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+        .no-results {
+            text-align: center;
+            color: var(--gold);
+            font-size: 18px;
+            padding: 40px 20px;
+            grid-column: 1 / -1;
+        }
+    `;
+    document.head.appendChild(css);
+    
+    // 2. إضافة خانة البحث قبل المينيو
+    const menuTabs = document.querySelector('.menu-tabs');
+    if (menuTabs) {
+        const searchHTML = `
+            <div class="menu-search-box">
+                <input type="text" id="menuSearch" placeholder="ابحث عن طبق...">
+            </div>
+        `;
+        menuTabs.insertAdjacentHTML('beforebegin', searchHTML);
+    }
+    
+    // 3. وظيفة البحث
+    const searchInput = document.getElementById('menuSearch');
+    const menuGrid = document.getElementById('menuGrid');
+    
+    if (searchInput && menuGrid) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            const cards = menuGrid.querySelectorAll('.menu-card');
+            let found = 0;
+            
+            cards.forEach(card => {
+                const name = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('p').textContent.toLowerCase();
+                
+                if (name.includes(query) || desc.includes(query)) {
+                    card.style.display = '';
+                    found++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // رسالة "لا توجد نتائج"
+            let noResults = menuGrid.querySelector('.no-results');
+            if (found === 0 && query) {
+                if (!noResults) {
+                    noResults = document.createElement('p');
+                    noResults.className = 'no-results';
+                    noResults.textContent = '😔 لا توجد نتائج لـ "' + query + '"';
+                    menuGrid.appendChild(noResults);
+                } else {
+                    noResults.textContent = '😔 لا توجد نتائج لـ "' + query + '"';
+                    noResults.style.display = '';
+                }
+            } else if (noResults) {
+                noResults.style.display = 'none';
+            }
+        });
+    }
+})();
+</script>
 </body>
 </html>
