@@ -944,5 +944,209 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 })();
 </script>
+  <!-- ===== ميزة المفضلة ❤️ ===== -->
+<script>
+(function() {
+    // 1. CSS
+    const css = document.createElement('style');
+    css.textContent = `
+        .fav-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(10,10,10,0.75);
+            border: 2px solid rgba(212,175,55,0.5);
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 5;
+            backdrop-filter: blur(6px);
+        }
+        .fav-btn:hover {
+            transform: scale(1.15);
+            border-color: #d4af37;
+        }
+        .fav-btn.active {
+            background: rgba(212,175,55,0.95);
+            border-color: #d4af37;
+            color: #fff;
+            animation: heartPop 0.4s ease;
+        }
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .fav-tab {
+            background: linear-gradient(135deg, #e91e63, #c2185b) !important;
+            color: #fff !important;
+            border-color: #e91e63 !important;
+        }
+        .menu-img {
+            position: relative;
+        }
+    `;
+    document.head.appendChild(css);
+    
+    // 2. إضافة زر القلب لكل كارت
+    function addFavoriteButtons() {
+        const cards = document.querySelectorAll('.menu-card');
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
+        cards.forEach(card => {
+            if (card.querySelector('.fav-btn')) return;
+            
+            const name = card.querySelector('h3').textContent.trim();
+            const imgBox = card.querySelector('.menu-img');
+            
+            if (!imgBox) return;
+            
+            const btn = document.createElement('button');
+            btn.className = 'fav-btn';
+            btn.innerHTML = favorites.includes(name) ? '❤️' : '🤍';
+            btn.title = 'أضف للمفضلة';
+            
+            if (favorites.includes(name)) {
+                btn.classList.add('active');
+            }
+            
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleFavorite(name, this);
+            });
+            
+            imgBox.appendChild(btn);
+        });
+    }
+    
+    // 3. تبديل المفضلة
+    function toggleFavorite(name, btn) {
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
+        if (favorites.includes(name)) {
+            favorites = favorites.filter(f => f !== name);
+            btn.innerHTML = '🤍';
+            btn.classList.remove('active');
+            showMiniToast('💔 تم الحذف من المفضلة');
+        } else {
+            favorites.push(name);
+            btn.innerHTML = '❤️';
+            btn.classList.add('active');
+            showMiniToast('❤️ تم الإضافة للمفضلة');
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavCount();
+    }
+    
+    // 4. إضافة تاب "المفضلة" في المينيو
+    function addFavoritesTab() {
+        const menuTabs = document.querySelector('.menu-tabs');
+        if (!menuTabs) return;
+        if (menuTabs.querySelector('[data-category="favorites"]')) return;
+        
+        const tab = document.createElement('button');
+        tab.className = 'menu-tab fav-tab';
+        tab.setAttribute('data-category', 'favorites');
+        tab.innerHTML = '❤️ المفضلة <span id="favCount" style="font-size:12px;">(0)</span>';
+        menuTabs.appendChild(tab);
+        
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            showOnlyFavorites();
+        });
+        
+        updateFavCount();
+    }
+    
+    // 5. عرض المفضلة بس
+    function showOnlyFavorites() {
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const cards = document.querySelectorAll('.menu-card');
+        let found = 0;
+        
+        cards.forEach(card => {
+            const name = card.querySelector('h3').textContent.trim();
+            if (favorites.includes(name)) {
+                card.style.display = '';
+                card.classList.remove('hidden');
+                found++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        const menuGrid = document.getElementById('menuGrid');
+        let noResults = menuGrid.querySelector('.no-fav-results');
+        
+        if (found === 0) {
+            if (!noResults) {
+                noResults = document.createElement('p');
+                noResults.className = 'no-results no-fav-results';
+                noResults.textContent = '💔 مفيش أطباق في المفضلة لحد الآن';
+                noResults.style.cssText = 'grid-column:1/-1;text-align:center;color:var(--gold);font-size:18px;padding:40px 20px;';
+                menuGrid.appendChild(noResults);
+            }
+            noResults.style.display = '';
+        } else if (noResults) {
+            noResults.style.display = 'none';
+        }
+    }
+    
+    // 6. تحديث العداد
+    function updateFavCount() {
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const countEl = document.getElementById('favCount');
+        if (countEl) countEl.textContent = '(' + favorites.length + ')';
+    }
+    
+    // 7. Toast صغير
+    function showMiniToast(msg) {
+        const toast = document.createElement('div');
+        toast.textContent = msg;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #e91e63, #c2185b);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            z-index: 99999;
+            box-shadow: 0 10px 30px rgba(233,30,99,0.4);
+            animation: toastIn 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'toastOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 1800);
+    }
+    
+    // تشغيل أولي
+    function init() {
+        addFavoriteButtons();
+        addFavoritesTab();
+    }
+    
+    // بعد التحميل
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        setTimeout(init, 800);
+    }
+})();
+</script>  
 </body>
 </html>
