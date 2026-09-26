@@ -1245,5 +1245,313 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 })();
 </script>
+<!-- ===== 4 ميزات: ترتيب + غذائي + عداد + مشاركة ===== -->
+<script>
+(function() {
+    // ========== CSS ==========
+    const css = document.createElement('style');
+    css.textContent = `
+        /* ترتيب */
+        .sort-wrapper { display: flex; justify-content: center; margin-bottom: 20px; }
+        .sort-select {
+            background: var(--bg-card-2);
+            border: 2px solid var(--border-mid);
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sort-select:focus { outline: none; border-color: var(--gold); }
+        .sort-select:hover { border-color: var(--gold); }
+        
+        /* معلومات غذائية */
+        .diet-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .diet-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+        .diet-tag.spicy { background: rgba(231,76,60,0.2); color: #ff6b5a; border: 1px solid #e74c3c; }
+        .diet-tag.veggie { background: rgba(39,174,96,0.2); color: #4ee08a; border: 1px solid #27ae60; }
+        .diet-tag.cal { background: rgba(212,175,55,0.2); color: #f0d97a; border: 1px solid #d4af37; }
+        
+        /* زر المشاركة */
+        .share-float {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 900;
+            box-shadow: 0 10px 30px rgba(52,152,219,0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 24px;
+        }
+        body[dir="ltr"] .share-float { right: auto; left: 30px; }
+        .share-float:hover { transform: scale(1.1); }
+        
+        /* عداد تنازلي */
+        .offer-banner {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: linear-gradient(90deg, #d4af37, #a8841f, #d4af37);
+            color: #0a0a0a;
+            padding: 10px 40px;
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            animation: bannerSlide 0.5s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        @keyframes bannerSlide {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        .offer-banner.hidden { display: none; }
+        .countdown-box { display: flex; gap: 4px; align-items: center; }
+        .countdown-num {
+            background: #0a0a0a;
+            color: #d4af37;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 13px;
+            min-width: 28px;
+            text-align: center;
+        }
+        .offer-close {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #0a0a0a;
+            font-weight: 900;
+        }
+        body[dir="ltr"] .offer-close { left: auto; right: 12px; }
+        
+        @media (max-width: 600px) {
+            .share-float { bottom: 90px; right: 20px; width: 50px; height: 50px; font-size: 20px; }
+            body[dir="ltr"] .share-float { left: 20px; right: auto; }
+            .offer-banner { font-size: 11px; padding: 8px 40px; }
+        }
+    `;
+    document.head.appendChild(css);
+    
+    // ========== 1. ترتيب حسب السعر ==========
+    function addSort() {
+        const menuTabs = document.querySelector('.menu-tabs');
+        const menuGrid = document.getElementById('menuGrid');
+        if (!menuTabs || !menuGrid) return;
+        if (document.querySelector('.sort-wrapper')) return;
+        
+        Array.from(menuGrid.querySelectorAll('.menu-card')).forEach((card, i) => {
+            card.dataset.originalIndex = i;
+        });
+        
+        menuTabs.insertAdjacentHTML('afterend', `
+            <div class="sort-wrapper">
+                <select class="sort-select" id="sortSelect">
+                    <option value="default">↕️ الترتيب الافتراضي</option>
+                    <option value="low-high">💰 من الأرخص للأغلى</option>
+                    <option value="high-low">💎 من الأغلى للأرخص</option>
+                    <option value="name">🔤 أبجدي</option>
+                </select>
+            </div>
+        `);
+        
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            const cards = Array.from(menuGrid.querySelectorAll('.menu-card'));
+            const v = this.value;
+            
+            cards.sort((a, b) => {
+                const pA = parseFloat(a.querySelector('.menu-price').textContent) || 0;
+                const pB = parseFloat(b.querySelector('.menu-price').textContent) || 0;
+                const nA = a.querySelector('h3').textContent;
+                const nB = b.querySelector('h3').textContent;
+                if (v === 'low-high') return pA - pB;
+                if (v === 'high-low') return pB - pA;
+                if (v === 'name') return nA.localeCompare(nB, 'ar');
+                return parseInt(a.dataset.originalIndex) - parseInt(b.dataset.originalIndex);
+            });
+            
+            cards.forEach(c => menuGrid.appendChild(c));
+        });
+    }
+    
+    // ========== 2. معلومات غذائية ==========
+    const DIET = {
+        'كباب لحم': ['cal:450 سعرة'],
+        'دجاج مشوي': ['cal:320 سعرة'],
+        'طرب': ['spicy:حار', 'cal:380 سعرة'],
+        'كفتة مشوية': ['cal:400 سعرة'],
+        'ريش ضاني': ['cal:520 سعرة'],
+        'مشاوي مشكلة': ['cal:850 سعرة'],
+        'سلطة بلدي': ['veggie:نباتي', 'cal:80 سعرة'],
+        'حمص بالطحينة': ['veggie:نباتي', 'cal:220 سعرة'],
+        'بابا غنوج': ['veggie:نباتي', 'cal:180 سعرة'],
+        'شوربة عدس': ['veggie:نباتي', 'cal:150 سعرة'],
+        'أرز بخاري': ['veggie:نباتي', 'cal:280 سعرة'],
+        'بطاطس مقلية': ['veggie:نباتي', 'cal:310 سعرة'],
+        'عيش بلدي': ['veggie:نباتي', 'cal:120 سعرة'],
+        'أم علي': ['veggie:نباتي', 'cal:420 سعرة'],
+        'تشيز كيك': ['veggie:نباتي', 'cal:380 سعرة']
+    };
+    
+    function addDiet() {
+        document.querySelectorAll('.menu-card').forEach(card => {
+            if (card.querySelector('.diet-tags')) return;
+            const name = card.querySelector('h3').textContent.trim();
+            const info = DIET[name];
+            if (!info) return;
+            
+            const infoDiv = card.querySelector('.menu-info');
+            const descP = infoDiv.querySelector('p');
+            if (!descP) return;
+            
+            const tags = info.map(item => {
+                const [type, text] = item.split(':');
+                const icon = type === 'spicy' ? '🌶️' : type === 'veggie' ? '🌱' : '🔥';
+                return `<span class="diet-tag ${type}">${icon} ${text}</span>`;
+            }).join('');
+            
+            const div = document.createElement('div');
+            div.className = 'diet-tags';
+            div.innerHTML = tags;
+            descP.insertAdjacentElement('afterend', div);
+        });
+    }
+    
+    // ========== 3. زر المشاركة ==========
+    function addShare() {
+        if (document.querySelector('.share-float')) return;
+        
+        const btn = document.createElement('button');
+        btn.className = 'share-float';
+        btn.innerHTML = '📤';
+        btn.title = 'شارك الموقع';
+        
+        btn.addEventListener('click', async () => {
+            const data = {
+                title: 'مطعم اللهيب | مشويات فاخرة',
+                text: '🔥 شوف مطعم اللهيب — أشهى المشويات',
+                url: 'https://hany-m-99.github.io/Hany-project/'
+            };
+            
+            try {
+                if (navigator.share) {
+                    await navigator.share(data);
+                } else {
+                    await navigator.clipboard.writeText(data.url);
+                    showToast('📋 تم نسخ رابط الموقع');
+                }
+            } catch (e) {
+                if (e.name !== 'AbortError') {
+                    try {
+                        await navigator.clipboard.writeText(data.url);
+                        showToast('📋 تم نسخ رابط الموقع');
+                    } catch (err) {}
+                }
+            }
+        });
+        
+        document.body.appendChild(btn);
+    }
+    
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:180px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;padding:12px 24px;border-radius:50px;font-weight:700;font-family:Cairo,sans-serif;z-index:99999;box-shadow:0 10px 30px rgba(52,152,219,0.4);';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2200);
+    }
+    
+    // ========== 4. عداد تنازلي ==========
+    function addBanner() {
+        if (localStorage.getItem('bannerClosed') === 'yes') return;
+        if (document.querySelector('.offer-banner')) return;
+        
+        let end = localStorage.getItem('offerEnd');
+        if (!end) {
+            end = Date.now() + (3 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('offerEnd', end);
+        }
+        
+        const banner = document.createElement('div');
+        banner.className = 'offer-banner';
+        banner.innerHTML = `
+            <button class="offer-close" id="bannerClose">✕</button>
+            <span>🎉 خصم 20% بكود <strong>SAVE20</strong> — ينتهي بعد</span>
+            <div class="countdown-box">
+                <span class="countdown-num" id="cdD">0</span>:
+                <span class="countdown-num" id="cdH">0</span>:
+                <span class="countdown-num" id="cdM">0</span>:
+                <span class="countdown-num" id="cdS">0</span>
+            </div>
+        `;
+        document.body.insertBefore(banner, document.body.firstChild);
+        
+        document.getElementById('bannerClose').addEventListener('click', () => {
+            banner.classList.add('hidden');
+            localStorage.setItem('bannerClosed', 'yes');
+        });
+        
+        function tick() {
+            const diff = end - Date.now();
+            if (diff <= 0) {
+                document.getElementById('cdD').textContent = '0';
+                document.getElementById('cdH').textContent = '00';
+                document.getElementById('cdM').textContent = '00';
+                document.getElementById('cdS').textContent = '00';
+                return;
+            }
+            document.getElementById('cdD').textContent = Math.floor(diff / 86400000);
+            document.getElementById('cdH').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+            document.getElementById('cdM').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            document.getElementById('cdS').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+        }
+        
+        tick();
+        setInterval(tick, 1000);
+    }
+    
+    // ========== التشغيل ==========
+    function init() {
+        addSort();
+        addDiet();
+        addShare();
+        addBanner();
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(init, 1000));
+    } else {
+        setTimeout(init, 1000);
+    }
+})();
+</script>
 </body>
 </html>
