@@ -1165,5 +1165,85 @@ window.addEventListener('DOMContentLoaded', function() {
     }, true); // capture phase - بيشتغل قبل أي handler تاني
 })();
 </script>
+<!-- ===== شارات مميزة على الأطباق ===== -->
+<script>
+(function() {
+    // 1. حدد الأطباق المميزة هنا 👇
+    const BADGES = {
+        'كباب لحم': { text: '🔥 الأكثر طلباً', type: 'hot' },
+        'مشاوي مشكلة': { text: '🔥 الأكثر طلباً', type: 'hot' },
+        'ريش ضاني': { text: '⭐ عرض خاص', type: 'offer' },
+        'طرب': { text: '⭐ عرض خاص', type: 'offer' },
+        'دجاج مشوي': { text: '🆕 جديد', type: 'new' },
+        'حمص بالطحينة': { text: '🆕 جديد', type: 'new' }
+    };
+    
+    // 2. CSS
+    const css = document.createElement('style');
+    css.textContent = `
+        .menu-card {
+            position: relative;
+        }
+        .menu-img {
+            position: relative;
+            overflow: hidden;
+        }
+        .dish-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            z-index: 6;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            animation: badgePulse 2s infinite;
+            backdrop-filter: blur(6px);
+        }
+        .dish-badge.hot {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        .dish-badge.new {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+        }
+        .dish-badge.offer {
+            background: linear-gradient(135deg, #d4af37, #a8841f);
+            color: #0a0a0a;
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+    `;
+    document.head.appendChild(css);
+    
+    // 3. إضافة الشارات
+    function addBadges() {
+        document.querySelectorAll('.menu-card').forEach(card => {
+            if (card.querySelector('.dish-badge')) return;
+            
+            const name = card.querySelector('h3').textContent.trim();
+            const imgBox = card.querySelector('.menu-img');
+            
+            if (imgBox && BADGES[name]) {
+                const badge = document.createElement('span');
+                badge.className = 'dish-badge ' + BADGES[name].type;
+                badge.textContent = BADGES[name].text;
+                imgBox.appendChild(badge);
+            }
+        });
+    }
+    
+    // 4. تشغيل
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(addBadges, 700));
+    } else {
+        setTimeout(addBadges, 700);
+    }
+})();
+</script>
 </body>
 </html>
