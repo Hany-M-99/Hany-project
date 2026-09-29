@@ -2268,6 +2268,26 @@ window.addEventListener('DOMContentLoaded', function() {
     
     console.log('✅ Cart ready');
 })();
-</script>      
+</script> 
+<!-- كود نافذة الخيارات الناقص -->
+<div id="optModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#222; color:#fff; padding:20px; border-radius:10px; width:90%; max-width:400px; text-align:right;">
+        
+        <h3 id="optItemName"></h3>
+        <p id="optItemPrice"></p>
+
+        <div class="opt-choices">
+            <div class="opt-choice" data-val="small">عادي</div>
+        </div>
+
+        <h4>إضافات:</h4>
+        <div id="optAddons"></div>
+
+        <textarea id="optNotes" placeholder="ملاحظات..." style="width:100%; margin-top:10px; background:#333; color:#fff; border:1px solid #555; padding:10px; border-radius:5px;"></textarea>
+        
+        <button id="optConfirmBtn" style="background:#d4af37; color:#000; padding:10px 20px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">تأكيد الإضافة</button>
+        <button onclick="document.getElementById('optModal').style.display='none'" style="background:#555; color:#fff; padding:10px 20px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">إلغاء</button>
+    </div>
+</div>
 </body>
 </html>
