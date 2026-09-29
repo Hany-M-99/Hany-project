@@ -2288,6 +2288,27 @@ window.addEventListener('DOMContentLoaded', function() {
         <button id="optConfirmBtn" style="background:#d4af37; color:#000; padding:10px 20px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">تأكيد الإضافة</button>
         <button onclick="document.getElementById('optModal').style.display='none'" style="background:#555; color:#fff; padding:10px 20px; border:none; border-radius:5px; margin-top:10px; cursor:pointer;">إلغاء</button>
     </div>
-</div>
+</div>  
+<script>
+// كود الحل السحري: يفتح النافذة غصب عن أي حاجة
+document.addEventListener('click', function(e) {
+    let target = e.target;
+    if (target.tagName === 'BUTTON' || target.closest('button')) {
+        let btn = target.tagName === 'BUTTON' ? target : target.closest('button');
+        let btnText = (btn.textContent || btn.innerText || '').trim();
+        
+        // لو الزرار اللي داس عليه فيه كلمة "إضافة"
+        if (btnText.includes('إضافة') || btnText.includes('اضافة')) {
+            // نستنى كسر ثانية عشان الكود الأصلي يشتغل، وبعدين نفتح النافذة
+            setTimeout(function() {
+                const modal = document.getElementById('optModal');
+                if (modal) {
+                    modal.style.display = 'flex'; 
+                }
+            }, 100);
+        }
+    }
+});
+</script>
 </body>
 </html>
